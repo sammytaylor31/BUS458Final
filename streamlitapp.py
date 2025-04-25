@@ -11,7 +11,7 @@ import pandas as pd
 import joblib
 
 # Load the trained model
-with open("Downloads\salary_bracket_logistic_model.pkl", "rb") as file:
+with open("salary_bracket_logistic_model.pkl", "rb") as file:
     model = joblib.load(file)
 
 # Title
