@@ -15,7 +15,7 @@ with open("salary_bracket_logistic_model.pkl", "rb") as file:
     model = joblib.load(file)
 
 # Title
-st.title("💼💰 Salary Bracket Classifier 🌍🧠")
+st.title("💼💰 Salary Bracket Classifier")
 
 # Description
 st.write("🔍 This app predicts whether a data scientist’s salary is **Low**, **Medium**, or **High** based on your background and experience. Fill in your details below! 👇")
@@ -41,7 +41,7 @@ job_title = st.selectbox("🧑‍💼 Job Title", [
 ])
 
 # Prediction
-if st.button("🔮 Predict Salary Bracket"):
+if st.button("🔮 Predict Salary Midpoint"):
     input_data = pd.DataFrame({
         "Country": [country],
         "Gender": [gender],
@@ -50,5 +50,17 @@ if st.button("🔮 Predict Salary Bracket"):
         "Job_Title": [job_title]
     })
 
-    prediction = model.predict(input_data)[0]
-    st.success(f"🎉 Predicted Salary Bracket: **{prediction}** 🏆")
+    # One-hot encode to match the model's training process
+    input_enc = pd.get_dummies(input_data)
+
+    # Ensure all features the model expects are present
+    for feat in model.feature_names_in_:
+        if feat not in input_enc.columns:
+            input_enc[feat] = 0
+    input_enc = input_enc[model.feature_names_in_]
+
+    # Predict the numeric salary midpoint
+    salary_pred = model.predict(input_enc)[0]
+
+    # Display the result
+    st.success(f"🎉 Predicted Salary Midpoint: **${int(salary_pred):,}** USD")
